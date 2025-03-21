@@ -50,9 +50,9 @@ function ForgotPassword() {
                     <img src={logoImage} alt="Zalo Logo" />
                 </div>
                 <h2>Khôi phục mật khẩu</h2>
-                <p>Để khôi phục mật khẩu, vui lòng nhập số điện thoại đã đăng ký tài khoản Zolo</p>
+                <p>Để khôi phục mật khẩu, vui lòng nhập số điện thoại đã đăng ký tài khoản Nalo</p>
                 <div className="phone-input">
-                    <select className="country-code">
+                    <select className="country1-code">
                         <option value="+84">+84</option>
 						<option value="+1">+1</option>
 						<option value="+2">+2</option>
