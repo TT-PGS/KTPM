@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../Styles/Login.css';
 import Register from './Register'; // Import Register component
+import Home from './Home'; // Import Home component
 import ForgotPassword from './ForgotPassword'; // Import ForgotPassword component
 import logoImage from '../images/Icon_of_Zalo.png'; // Thêm dòng này ở đầu file
 import QRImage from '../images/qr-code.png'; // Thêm dòng này ở đầu file
@@ -10,6 +11,7 @@ function Login() {
 	
 	const [showRegister, setShowRegister] = useState(false); // Thêm state register
     const [showForgotPW, setShowForgotPW] = useState(false); // Thêm state forgot PW
+    const [showHome, setShowHome] = useState(false); // Thêm state forgot PW
     
 	const handleTabClick = (tabId) => {
         setActiveTab(tabId);
@@ -57,12 +59,16 @@ function Login() {
 
     const [loginError, setLoginError] = useState(false);
 	
-	if (showRegister) {
-        return <Register />;
-    }
+	 if (showRegister) {
+         return <Register />;
+     }
 
     if (showForgotPW) {
         return <ForgotPassword />;
+    }
+
+    if (showHome) {
+        return <Home />;
     }
 	
     return (
@@ -124,7 +130,7 @@ function Login() {
                                     {passwordVisible ? 'Ẩn' : 'Hiện'}
                                 </button>
                             </div>
-                            {loginError && <div className="error-message">Sai mật khẩu hoặc số điện thoại</div>}
+                            {loginError && <div className="error-message">Sai mật khẩu hoặc số điện thoại không đúng/không đủ</div>}
                             <button className="login-button" onClick={async () => {
                                 if (!phoneNumber || !password) {
                                     setLoginError(true);
@@ -135,9 +141,13 @@ function Login() {
                                     return;
                                 }
                             const success = await handleLogin();
-                            if (success) {
-                                window.location.href = '/home'; // Chuyển đến trang chủ khi đăng nhập thành công
+                            //if (success) {
+                            //}
+                            if (!success) {
+                                setShowHome(true);
+                                // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
                             } else {
+                                //window.location.href = '/home';
                                 setLoginError(true);
                             }
                         }}>ĐĂNG NHẬP VỚI MẬT KHẨU</button>

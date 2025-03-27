@@ -1,0 +1,155 @@
+/* Tổng thể layout */
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Thanh bên trái nhỏ */
+.left-sidebar {
+  width: 50px;
+  background: #0078ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.sidebar-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  margin: 15px 0;
+  cursor: pointer;
+  color: white;
+}
+
+/* Sidebar danh sách chat */
+.sidebar {
+  width: 200px;
+  background: #f4f4f4;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-item {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.chat-item.active {
+  background: #d1e7fd;
+  font-weight: bold;
+}
+
+/* Nội dung chat */
+.chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #eaeaea;
+}
+
+.chat-header {
+  padding: 15px;
+  background: #0078ff;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Tin nhắn */
+.messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto; /* Tạo thanh cuộn */
+  background: #eaeaea;
+  max-height: 800px;
+}
+
+.message {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-box {
+ max-width: 60%;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+  
+.message-box.left {
+  align-self: flex-start;
+  background: #fff;
+  text-align: left;
+}
+
+.message-box.right {
+  align-self: flex-end;
+  background: #fff;
+  text-align: right;
+}
+
+.message-sender {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.message-box.right .message-sender {
+  text-align: right; /* Canh phải tên người gửi */
+}
+.message-time {
+  font-size: 12px;
+  text-align: right;
+  margin-top: 5px;
+  color: gray;
+}
+
+
+/* Thanh nhập tin nhắn */
+.chat-footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.send-button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  background: #0078ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
