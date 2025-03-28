@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../Styles/Home.css';
+import EmojiPicker from "emoji-picker-react";
 import profileImage from '../images/profile-image.jpg'; // Import ảnh đại diện
 import messagesData from "../json/messages.json"; // Import file JSON
 
@@ -10,12 +11,17 @@ const Home = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
     setChatList(messagesData.chats);
     setSelectedChat(messagesData.chats[0]);
     setMessages(messagesData.chats[0]?.messages || []);
   }, []);
+
+  const handleEmojiClick = (emojiObject) => {
+    setNewMessage((prev) => prev + emojiObject.emoji);
+  };
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -80,7 +86,15 @@ const Home = () => {
 
         <div className="chat-footer">
           <button className="icon-button">📷</button>
-          <button className="icon-button">😊</button>
+          {/* Nút mở emoji picker */}
+		  <button className="icon-button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
+		  
+      {/* {showEmojiPicker && (
+      <div className="emoji-picker">
+        <EmojiPicker onEmojiClick={handleEmojiClick} />
+      </div>
+      )} */}
+		  {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
           <input
             type="text"
             placeholder="Nhập tin nhắn..."
