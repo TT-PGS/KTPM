@@ -88,3 +88,10 @@
     color: #1a94ff;
     text-align: left;
 }
+
+.error {
+    position: absolute;
+    bottom: -15px;
+    color: red;
+    font-size: 12px;
+}
