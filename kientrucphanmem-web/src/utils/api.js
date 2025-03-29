@@ -1,3 +1,5 @@
+import { AUTH_TOKEN_KEY } from '../constants/user'; // Import the constant
+
 export const apiRequest = async (endpoint, method, body) => {
   try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
@@ -20,7 +22,7 @@ export const apiRequest = async (endpoint, method, body) => {
 
       // Save token to localStorage for specific endpoints
       if ((endpoint.includes('register') || endpoint.includes('login')) && data.token) {
-          localStorage.setItem('authToken', data.token);
+          localStorage.setItem(AUTH_TOKEN_KEY, data.token); // nen dinh nghia authToken vao 1 bien constant
       }
 
       return data;

@@ -91,8 +91,9 @@ function RegisterContainer() {
 
             alert('Đăng ký thành công!');
 
-            dispatch(saveUserData(data)); // Save user data to Redux
-            setShowLoginContainer(true);
+            // dispatch(saveUserData(data)); // Save user data to Redux
+            // setShowLoginContainer(true);
+            window.location.href = '/'; // Redirect to home page with reload
 
         } catch (error) {
             alert('Có lỗi xảy ra. Vui lòng thử lại!');

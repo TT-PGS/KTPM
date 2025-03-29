@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../Styles/Profile.css';
 import profileImage from '../images/profile-image.jpg'; // Ảnh mặc định
 
@@ -10,6 +11,9 @@ function Profile() {
         birthday: '01 tháng 01, 1993',
         phone: '+84 836 444 777',
     });
+
+
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -70,6 +74,7 @@ function Profile() {
             ) : (
                 <button className="update-button" onClick={handleEditClick}>Cập nhật <i className="fas fa-pencil-alt"></i></button>
             )}
+             <button className="back-button" onClick={() => navigate('/')}>Quay lại Trang Chủ</button> {/* Back to Home Button */}
         </div>
     );
 }

@@ -6,9 +6,12 @@ import generateToken from '../utils/generateToken.js';
 //@route    POST api/users/login
 //@access   Public
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  console.log('login-------------------------------', req.body);
+  const { phoneNumber, password } = req.body;
+  const user = await User.findOne({ phone: phoneNumber });
 
+  console.log('user', user.password);
+  console.log('password', password);
   if (user && (await user.matchPassword(password))) {
     return res.json({
       _id: user._id,
@@ -66,8 +69,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
+    user.fullname = req.body.fullname || user.fullname;
+    user.phone = req.body.phone || user.phone;
     if (req.body.password) {
       user.password = req.body.password;
     }
@@ -75,9 +78,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     const updatedUser = await user.save();
     return res.json({
       _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      fullname: updatedUser.fullname,
+      phone: updatedUser.phone,
       token: generateToken(updatedUser._id),
     });
   } else {
@@ -86,4 +88,21 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, register, getUsers, updateUserProfile };
+const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    return res.json({
+      _id: user._id,
+      fullname: user.fullname,
+      phone: user.phone,
+      token: generateToken(user._id),
+
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not Found');
+  }
+});
+
+export { login, register, getUsers, updateUserProfile, getUserProfile };

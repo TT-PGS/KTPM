@@ -2,6 +2,7 @@
 .chat-container {
   display: flex;
   height: 100vh;
+  width: 100vw;
 }
 
 /* Thanh bên trái nhỏ */
@@ -53,6 +54,7 @@
   display: flex;
   flex-direction: column;
   background: #eaeaea;
+  height: 100%; /* Ensure it stretches to fill the parent container */
 }
 
 .chat-header {
@@ -70,7 +72,7 @@
   padding: 15px;
   overflow-y: auto; /* Tạo thanh cuộn */
   background: #eaeaea;
-  max-height: 700px;
+  min-height: 700px;
 }
 
 .message {
@@ -97,6 +99,7 @@
   align-self: flex-start;
   background: #fff;
   text-align: left;
+  margin-right: auto;
 }
 
 .message-box.right {
@@ -104,6 +107,7 @@
   background: #fff;
   text-align: right;
   border-radius: 10px 10px 0 10px; /* Bo tròn một góc bên trái */
+  margin-left: auto;
 }
 
 .message-sender {
@@ -133,6 +137,7 @@
   padding: 10px;
   background: #fff;
   border-top: 1px solid #ddd;
+  position: relative; /* de emoji-picker có thể hiển thị ở vị trí tuyệt đối */
 }
 
 .icon-button {

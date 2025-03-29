@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const connectDb = async () => {
   const URL = process.env.MONGO_URI;
   try {
+     // Enable query logging
+     mongoose.set('debug', true);
     await mongoose.connect(URL, {
       useNewUrlParser: true,
       useFindAndModify: true,

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import '../Styles/Login.css';
 import RegisterContainer from './RegisterContainer'; // Import Register component
-import Home from './Home'; // Import Home component
+import { apiRequest } from '../utils/api'; // Import the apiRequest utility
+// import Home from './Home'; // Import Home component
 import ForgotPassword from './ForgotPassword'; // Import ForgotPassword component
 import logoImage from '../images/Icon_of_Zalo.png'; // Thêm dòng này ở đầu file
 import QRImage from '../images/qr-code.png'; // Thêm dòng này ở đầu file
@@ -10,15 +11,16 @@ function LoginContainer() {
     const [activeTab, setActiveTab] = useState('phone');
     const [passwordVisible, setPasswordVisible] = useState(false);
 	
-	const [showRegister, setShowRegister] = useState(false); // Thêm state register
+	// const [showRegister, setShowRegister] = useState(false); // Thêm state register
     const [showForgotPW, setShowForgotPW] = useState(false); // Thêm state forgot PW
-    const [showHome, setShowHome] = useState(false); // Thêm state forgot PW
+    // const [showHome, setShowHome] = useState(false); // Thêm state forgot PW
     
 	const handleTabClick = (tabId) => {
         setActiveTab(tabId);
 	}
 	const handleRegisterClick = () => {
-        setShowRegister(true);
+        // setShowRegister(true);
+        window.location.href = '/register'; // Redirect to Register with reload
 	}	
 
     const handleForgotPWClick = () => {
@@ -34,43 +36,41 @@ function LoginContainer() {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('your-api-endpoint/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    phoneNumber: phoneNumber,
-                    password: password
-                })
+            const data = await apiRequest('api/users/login', 'POST', {
+                phoneNumber: phoneNumber,
+                password: password,
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                // Handle successful login
-                console.log('Login successful', data);
+            // Save the token to localStorage
+            if (data && data.token) {
+                // localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+                // console.log('Login successful', data);
+                // setShowHome(true); // Redirect to Home
+                // return true;
+                window.location.href = '/'; // Redirect to Home with reload
             } else {
-                // Handle login error
                 console.error('Login failed', data);
+                return false;
             }
         } catch (error) {
             console.error('Error:', error);
+            return false;
         }
     };
 
     const [loginError, setLoginError] = useState(false);
 	
-	 if (showRegister) {
-         return <RegisterContainer />;
-     }
+	//  if (showRegister) {
+    //      return <RegisterContainer />;
+    //  }
 
     if (showForgotPW) {
         return <ForgotPassword />;
     }
 
-    if (showHome) {
-        return <Home />;
-    }
+    // if (showHome) {
+    //     return <Home />;
+    // }
 	
     return (
         <div className="container">
@@ -141,16 +141,17 @@ function LoginContainer() {
                                     setLoginError(true);
                                     return;
                                 }
-                            const success = await handleLogin();
+                                handleLogin();
+                            // const success = await handleLogin();
                             //if (success) {
                             //}
-                            if (!success) {
-                                setShowHome(true);
-                                // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
-                            } else {
-                                //window.location.href = '/home';
-                                setLoginError(true);
-                            }
+                            // if (!success) {
+                            //     setShowHome(true);
+                            //     // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
+                            // } else {
+                            //     //window.location.href = '/home';
+                            //     setLoginError(true);
+                            // }
                         }}>ĐĂNG NHẬP VỚI MẬT KHẨU</button>
 
                         <button className="forgot-button" onClick={handleForgotPWClick}>QUÊN MẬT KHẨU</button>
