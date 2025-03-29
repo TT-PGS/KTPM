@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { saveUserData } from '../redux/actions/userActions';
 import { apiRequest } from '../utils/api';
 import '../Styles/Register.css'; // Import file CSS
-import LoginContainer from './LoginContainer';
+
 
 function RegisterContainer() {
-    const [showLoginContainer, setShowLoginContainer] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const fullnameInputRef = useRef(null);
@@ -14,10 +11,9 @@ function RegisterContainer() {
     const passwordInputRef = useRef(null);
     const confirmPasswordInputRef = useRef(null);
 
-    const dispatch = useDispatch(); // Redux dispatch
-
     const handleBackClick = () => {
-        setShowLoginContainer(true);
+        // make browser back
+        window.history.back();
     };
 
     const handleFocus = (inputRef) => {
@@ -52,10 +48,6 @@ function RegisterContainer() {
         };
     }, []);
 
-    if (showLoginContainer) {
-        return <LoginContainer />;
-    }
-
     const handleRegister = async () => {
         // Get values from refs
         const fullname = fullnameInputRef.current.value;
@@ -83,16 +75,13 @@ function RegisterContainer() {
 
         setIsLoading(true);
         try {
-            const data = await apiRequest('api/users/register', 'POST', {
+            await apiRequest('api/users/register', 'POST', {
                 fullname,
                 phone,
                 password,
             });
 
             alert('Đăng ký thành công!');
-
-            // dispatch(saveUserData(data)); // Save user data to Redux
-            // setShowLoginContainer(true);
             window.location.href = '/'; // Redirect to home page with reload
 
         } catch (error) {
@@ -134,7 +123,16 @@ function RegisterContainer() {
                     onClick={handleRegister}
                     disabled={isLoading}
                 >
-                    {isLoading ? 'ĐANG XỬ LÝ...' : 'ĐĂNG KÝ'}
+                     {isLoading ? (
+                        <div className="loading-dots">
+                            ĐANG XỬ LÝ
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    ) : (
+                        'ĐĂNG KÝ'
+                    )}
                 </button>
                 <button className="back-button" onClick={handleBackClick}>Quay lại</button>
             </div>

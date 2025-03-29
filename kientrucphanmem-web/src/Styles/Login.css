@@ -50,6 +50,7 @@ body {
 .tab-content {
     margin-bottom: 20px;
     text-align: center;
+    position: relative;
 }
 
 .input-group {
@@ -122,4 +123,14 @@ body {
 .register a {
     color: #1a94ff;
     text-decoration: none;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+    position: absolute;
+    font-size: 14px;
+    top: 111px;
+    text-align: center;
+    width: 100%;
 }

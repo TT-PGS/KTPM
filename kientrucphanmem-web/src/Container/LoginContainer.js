@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../Styles/Login.css';
-import RegisterContainer from './RegisterContainer'; // Import Register component
 import { apiRequest } from '../utils/api'; // Import the apiRequest utility
 // import Home from './Home'; // Import Home component
 import ForgotPassword from './ForgotPassword'; // Import ForgotPassword component
@@ -142,16 +141,6 @@ function LoginContainer() {
                                     return;
                                 }
                                 handleLogin();
-                            // const success = await handleLogin();
-                            //if (success) {
-                            //}
-                            // if (!success) {
-                            //     setShowHome(true);
-                            //     // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
-                            // } else {
-                            //     //window.location.href = '/home';
-                            //     setLoginError(true);
-                            // }
                         }}>ĐĂNG NHẬP VỚI MẬT KHẨU</button>
 
                         <button className="forgot-button" onClick={handleForgotPWClick}>QUÊN MẬT KHẨU</button>
