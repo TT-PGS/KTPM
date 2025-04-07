@@ -1,0 +1,61 @@
+.find-user-container {
+  padding: 20px;
+  min-width: 500px;
+  margin: 10% auto;
+  background-color: white ;
+  border-radius: 5px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  padding: 10px;
+  font-size: 16px;
+  flex: 1;
+}
+
+.input-group button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0078ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.input-group button:hover {
+  background-color: #0056b3;
+}
+
+.user-info {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
+
+.back-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #aaa;
+}

@@ -1,0 +1,51 @@
+.create-group-container {
+  padding: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.friends-list {
+  margin-bottom: 20px;
+}
+
+.friend-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.friend-item.selected {
+  background-color: #0078ff;
+  color: white;
+}
+
+.create-group-button {
+  padding: 10px 20px;
+  background-color: #0078ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-group-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 10px;
+}

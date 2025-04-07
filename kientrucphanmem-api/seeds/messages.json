@@ -1,0 +1,186 @@
+{
+  "chats": [
+    {
+      "id": 1,
+      "name": "DSW2-Body",
+      "messages": [
+        { "id": 1, "text": "Chào mừng bạn!", "timestamp": "2025-03-27T10:00:00Z" },
+        { "id": 2, "text": "Hôm nay có cuộc họp vào lúc 3h chiều.", "timestamp": "2025-03-27T09:30:00Z" },
+        { "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" },
+		{ "id": 3, "text": "Nhớ hoàn thành báo cáo nhé.", "timestamp": "2025-03-27T09:00:00Z" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Bóng bàn Hoa Lư",
+      "messages": [
+        { "id": 1, "text": "Ai tham gia giải đấu hôm nay?", "timestamp": "2025-03-27T08:45:00Z" },
+        { "id": 2, "text": "Tôi đăng ký rồi!", "timestamp": "2025-03-27T08:30:00Z" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Hella Body",
+      "messages": [
+        { "id": 1, "text": "Cập nhật mới về sản phẩm!", "timestamp": "2025-03-27T07:45:00Z" }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Chat nhóm A",
+      "messages": [
+        { "id": 1, "text": "Hẹn gặp mọi người tối nay nhé!", "timestamp": "2025-03-26T18:00:00Z" }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Chat nhóm B",
+      "messages": [
+        { "id": 1, "text": "Lịch trình sự kiện đã cập nhật!", "timestamp": "2025-03-26T15:30:00Z" }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 7,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 8,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 9,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 10,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 11,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 12,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 13,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 14,
+      "name": "Chat nhóm C",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 15,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 16,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+	,
+    {
+      "id": 17,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chat nhóm D",
+      "messages": [
+        { "id": 1, "text": "Nhóm mình chuẩn bị xong chưa?", "timestamp": "2025-03-26T12:00:00Z" }
+      ]
+    }
+  ]
+}
