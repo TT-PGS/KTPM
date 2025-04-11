@@ -1,7 +1,6 @@
 import { AUTH_TOKEN_KEY } from '../constants/user'; // Import the constant
 
-export const apiRequest = async (endpoint, method, body) => {
-    console.log('API Request:', endpoint, method, body);
+export const apiRequest = async (endpoint, method, bodyData) => {
   try {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     const headers = {
@@ -13,7 +12,7 @@ export const apiRequest = async (endpoint, method, body) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
         method,
         headers,
-        body: JSON.stringify(body),
+        body: JSON.stringify(bodyData),
     });
 
     if (!response.ok) {
@@ -36,3 +35,31 @@ export const apiRequest = async (endpoint, method, body) => {
       throw error;
   }
 };
+
+export const apiUploadImage = async (endpoint, method, bodyData) => {
+    try {
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        const headers = {
+        //     'Content-Type': 'multipart/form-data',
+        // };
+        // if (token) {
+            Authorization: `Bearer ${token}`
+        }
+        const response = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
+            method,
+            headers,
+            body: bodyData,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Something went wrong');
+        }
+        const data = await response.json();
+        return data;
+    }
+    catch (error) {
+        console.error('API Request Error:', error);
+        throw error;
+    }
+}

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
+import path from 'path';
 import Conversation from '../models/conversationModel.js';
 import Message from '../models/messageModel.js'; // Import the Message model
+
 
 // Get conversations for the logged-in user
 export const getConversations = async (req, res) => {
@@ -31,9 +33,9 @@ export const getConversations = async (req, res) => {
 
 
 // Add a new message to a conversation
-export const upSertMessageToConversation = async (req, res) => {
+export const addMessageToConversation = async (req, res) => {
   try {
-    const { conversationId, recipientId, text } = req.body; // Get the conversation ID and message text from the request body
+    const { conversationId, text } = req.body; // Get the conversation ID and message text from the request body
 
     // Create a new message
     const newMessage = new Message({
@@ -44,52 +46,15 @@ export const upSertMessageToConversation = async (req, res) => {
     // Save the message
     await newMessage.save();
 
-
-    let conversation = null;
-    // Create a new conversation if it's not
-    if (!mongoose.Types.ObjectId.isValid(conversationId)) {
-      conversation = new Conversation({
-        isGroup: false,
-        participants: [req.user._id, recipientId],
-        messages: [newMessage._id],
-        lastMessage: newMessage._id,
-      });
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      throw new Error('Invalid conversation ID');
     }
-    else {
-      conversation = await Conversation.findById(conversationId);
-      if (!conversation) {
-        throw new Error('Invalid conversation ID');
-      }
-      // Add the message to the conversation
-      conversation.messages.push(newMessage._id);
-      conversation.lastMessage = newMessage._id; // Update the last message
-    }
+    // Add the message to the conversation
+    conversation.messages.push(newMessage._id);
+    conversation.lastMessage = newMessage._id; // Update the last message
 
     await conversation.save();
-
-
-    // Find conversations where the user is a participant
-    // const conversationNew = await Conversation.findOne({
-    //   _id: conversation._id , // Ensure both user IDs are in the participants array
-    // })
-    //   .populate('participants', 'nickname fullname') // Populate participant details
-    //   .populate('messages', 'sender text timestamp') // Populate message details
-    //   .populate('lastMessage', 'text timestamp') // Populate the last message details
-    //   .sort({ updatedAt: -1 }); // Sort by most recently updated
-
-    // // res.status(201).json({ message: 'Message added successfully', newMessage });
-    // res.status(200).json(conversationNew);
-
-
-    console.log('conversation._id-------------------------', conversation);
-    // console.log('billy-------------------------', req.io);
-
-    // on socket send has new message to conversationId
-    // Emit the new message to the room
-
-    // req.io.to(conversation._id).emit('newMessage', {
-    //   conversationId: conversation._id,
-    // });
 
     req.io.to(conversationId).emit('messageReceived', {});
     
@@ -139,5 +104,48 @@ export const getGroupConversations = async (req, res) => {
     res.status(200).json(groupConversations);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch group conversations', error });
+  }
+};
+
+
+export const uploadImageToConversation = async (req, res) => {
+  try {
+    console.log('req-------------------------', req);
+    const { conversationId } = req.body;
+    console.log('conversationId-------------------------', req.body);
+    console.log('req.file-------------------------', req.file);
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file provided' });
+    }
+
+    const imageUrl = path.join('uploads', req.file.filename); // Construct the image URL
+
+    // Create a new message with the image URL
+    const newMessage = new Message({
+      sender: req.user._id, // The logged-in user is the sender
+      text: imageUrl, // Save the image URL
+    });
+
+    // Save the message
+    await newMessage.save();
+
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      throw new Error('Invalid conversation ID');
+    }
+
+    // Add the message to the conversation
+    conversation.messages.push(newMessage._id);
+    conversation.lastMessage = newMessage._id; // Update the last message
+
+    await conversation.save();
+
+    req.io.to(conversationId).emit('messageReceived', {});
+
+    res.status(201).json({ message: 'Image uploaded successfully', imageUrl });
+  } catch (error) {
+    console.log('error-------------------------', error);
+    res.status(500).json({ message: 'Failed to upload image', error });
   }
 };

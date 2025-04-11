@@ -1,4 +1,4 @@
-import { apiRequest } from '../../utils/api';
+import { apiRequest, apiUploadImage } from '../../utils/api';
 
 export const FETCH_MESSAGES = 'FETCH_MESSAGES';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
@@ -17,14 +17,19 @@ export const fetchMessages = (param) => async (dispatch) => {
 };
 
 // Send a new message
-export const sendMessage = (messageData) => async (dispatch) => {
+export const sendMessage = (messageData) => async () => {
   try {
     await apiRequest('api/conversations/message', 'POST', messageData);
-    // dispatch({
-    //   type: SEND_MESSAGE,
-    //   payload: response,
-    // });
   } catch (error) {
     console.error('Failed to send message:', error);
   }
 };
+
+export const sendImage = (formData) => async () => {
+  try {
+    await apiUploadImage('api/conversations/upload-image', 'POST', formData);
+
+  } catch (error) {
+    console.error('Failed to send image:', error);
+  }
+}

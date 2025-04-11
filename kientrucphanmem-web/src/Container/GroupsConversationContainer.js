@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchConversationGroupList, setSelectedGroup } from '../redux/actions/groupActions';
-import { fetchMessages, sendMessage } from '../redux/actions/messageActions';
+import { fetchMessages, sendMessage, sendImage } from '../redux/actions/messageActions';
 import { io } from 'socket.io-client';
 import Layout from './Layout';
-import EmojiPicker from 'emoji-picker-react';
+import ChatContent from '../Components/ChatContent';
 import '../Styles/Home.css';
 
 const socket = io('http://localhost:5009'); // Replace with your backend URL
@@ -79,9 +79,12 @@ const GroupsConversationContainer = () => {
     group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getUserNickname = (userId) => {
-    const user = listParticipants.find((participant) => participant._id === userId);
-    return user ? user.nickname : '';
+  const handleSendImage = async (file) => {
+    const formData = new FormData();
+    formData.append('conversationId', conversationId);
+    formData.append('image', file);
+    console.log('findImage-------------------------', file);
+    dispatch(sendImage(formData));
   };
 
   return (
@@ -108,63 +111,24 @@ const GroupsConversationContainer = () => {
             </button>
           ))}
         </div>
-        <div className="chat-content">
-          {selectedGroup ? (
-            <>
-              <div className="chat-header">
-                <h2>Tin nhắn nhóm: {selectedGroup.groupName}</h2>
-              </div>
-              <div className="messages">
-                {listMessages.map((msg) => (
-                  <div
-                    key={msg._id}
-                    className={`message-box ${msg.sender === user._id ? 'right': 'left'}`}
-                  >
-                    <div className="message-sender">
-                      {msg.sender === user._id ? 'Bạn': getUserNickname(msg.sender)}
-                    </div>
-                    <div className="message">{msg.text}</div>
-                    <div className="message-time">
-                      {new Date(msg.timestamp).toLocaleTimeString()}
-                    </div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <div className="chat-footer">
-                <button className="icon-button">📷</button>
-                <button
-                  className="icon-button"
-                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                >
-                  😊
-                </button>
-                {showEmojiPicker && (
-                  <div className="emoji-picker">
-                    <EmojiPicker onEmojiClick={handleEmojiClick} />
-                  </div>
-                )}
-                <input
-                  type="text"
-                  placeholder="Nhập tin nhắn..."
-                  className="chat-input"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSendMessage();
-                  }}
-                />
-                <button className="send-button" onClick={handleSendMessage}>
-                  Gửi
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="chat-header">
-              <h2>Chọn một nhóm để trao đổi tin nhắn.</h2>
-            </div>
-          )}
-        </div>
+        <ChatContent
+    headerText={selectedGroup ? `Tin nhắn nhóm: ${selectedGroup.groupName}` : null}
+    listMessages={listMessages}
+    newMessage={newMessage}
+    setNewMessage={setNewMessage}
+    showEmojiPicker={showEmojiPicker}
+    setShowEmojiPicker={setShowEmojiPicker}
+    handleEmojiClick={handleEmojiClick}
+    handleSendMessage={handleSendMessage}
+    messagesEndRef={messagesEndRef}
+    itMe={(senderId) =>  user._id === senderId}
+    getSenderName={(senderId) => {
+      const participant = listParticipants.find((p) => p._id === senderId);
+      return participant ? participant.nickname : 'Bạn';
+    }}
+    placeholderText="Nhập tin nhắn..."
+    handleSendImage={handleSendImage} // Pass the image handler
+  />
       </div>
     </Layout>
   );

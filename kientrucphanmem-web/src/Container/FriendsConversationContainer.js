@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import { fetchFriendsList, setSelectedFriend } from '../redux/actions/friendActions';
-import { fetchMessages, sendMessage } from '../redux/actions/messageActions';
+import { fetchMessages, sendMessage, sendImage } from '../redux/actions/messageActions';
 import Layout from './Layout';
-import EmojiPicker from 'emoji-picker-react';
+import ChatContent from '../Components/ChatContent';
 import '../Styles/Home.css';
 
 const socket = io('http://localhost:5009'); // Replace with your backend URL
@@ -12,6 +12,7 @@ const socket = io('http://localhost:5009'); // Replace with your backend URL
 const FriendsConversationContainer = () => {
   const dispatch = useDispatch();
   const { friendsList, selectedFriend } = useSelector((state) => state.friend);
+  const { user } = useSelector((state) => state.user);
   const { messages } = useSelector((state) => state.message);
   const [ searchTerm, setSearchTerm] = useState('');
   const [ newMessage, setNewMessage] = useState('');
@@ -69,7 +70,6 @@ const FriendsConversationContainer = () => {
 
     const messageData = {
       conversationId,
-      recipientId: selectedFriend._id,
       text: newMessage,
     };
 
@@ -81,6 +81,14 @@ const FriendsConversationContainer = () => {
     friend.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
     friend.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSendImage = async (file) => {
+    const formData = new FormData();
+    formData.append('conversationId', conversationId);
+    formData.append('image', file);
+    console.log('findImage-------------------------', file);
+    dispatch(sendImage(formData));
+  };
 
   return (
     <Layout>
@@ -103,63 +111,23 @@ const FriendsConversationContainer = () => {
             </button>
           ))}
         </div>
-        <div className="chat-content">
-          {selectedFriend ? (
-            <>
-              <div className="chat-header">
-                <h2>Chat với {selectedFriend.nickname}</h2>
-              </div>
-              <div className="messages">
-                {listMessages.map((msg) => (
-                  <div
-                    key={msg._id}
-                    className={`message-box ${msg.sender === selectedFriend._id ? 'left': 'right'}`}
-                  >
-                    <div className="message-sender">
-                      {msg.sender === selectedFriend._id ? selectedFriend.nickname: 'Bạn' }
-                    </div>
-                    <div className="message">{msg.text}</div>
-                    <div className="message-time">
-                      {new Date(msg.timestamp).toLocaleTimeString()}
-                    </div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <div className="chat-footer">
-                <button className="icon-button">📷</button>
-                <button
-                  className="icon-button"
-                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                >
-                  😊
-                </button>
-                {showEmojiPicker && (
-                  <div className="emoji-picker">
-                    <EmojiPicker onEmojiClick={handleEmojiClick} />
-                  </div>
-                )}
-                <input
-                  type="text"
-                  placeholder="Nhập tin nhắn..."
-                  className="chat-input"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSendMessage();
-                  }}
-                />
-                <button className="send-button" onClick={handleSendMessage}>
-                  Gửi
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="chat-header">
-              <h2>Chọn một người bạn để trao đổi tin nhắn.</h2>
-            </div>
-          )}
-        </div>
+        <ChatContent
+    headerText={selectedFriend ? `Chat với ${selectedFriend.nickname}` : null}
+    listMessages={listMessages}
+    newMessage={newMessage}
+    setNewMessage={setNewMessage}
+    showEmojiPicker={showEmojiPicker}
+    setShowEmojiPicker={setShowEmojiPicker}
+    handleEmojiClick={handleEmojiClick}
+    handleSendMessage={handleSendMessage}
+    messagesEndRef={messagesEndRef}
+    itMe={(senderId) =>  user._id === senderId}
+    getSenderName={(senderId) =>
+      senderId === selectedFriend?._id ? selectedFriend.nickname : 'Bạn'
+    }
+    placeholderText="Nhập tin nhắn..."
+    handleSendImage={handleSendImage} // Pass the image handler
+  />
       </div>
     </Layout>
   );

@@ -1,4 +1,7 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import http from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
@@ -12,22 +15,41 @@ import conversationRoutes from './routes/conversationRoutes.js';
 dotenv.config();
 connectDb();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+console.log('dirname-------------------------', __dirname);
+
 const app = express();
+
+// Increase payload size limit
+
+// Serve static files from the 'uploads' folder
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*', // Allow all origins (adjust this for production)
-    methods: ['GET', 'POST'],
+    // methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Allow cookies and credentials
   },
 });
 
-app.use(express.json());
+// app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
+
 app.use(cors());
 // Middleware to attach `io` to `req`
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -60,39 +82,3 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-// import express from 'express';
-// import { Server } from 'socket.io';
-// const app = express();
-// import dotenv from 'dotenv';
-// import morgan from 'morgan';
-// import connectDb from './db.js';
-// import cors from 'cors';
-// dotenv.config();
-
-// import userRoutes from './routes/userRoutes.js';
-// import friendRoutes from './routes/friendRoutes.js';
-// import conversationRoutes from './routes/conversationRoutes.js';
-
-// connectDb();
-
-// app.use(express.json());
-// app.use(morgan('dev'));
-// app.use(cors());
-
-
-// // Routes user
-// app.use('/api/users', userRoutes);
-// // Routes friend
-// app.use('/api/friends', friendRoutes);
-// // Routes conversation
-// app.use('/api/conversations', conversationRoutes);
-
-// app.get('/', (req, res) => {
-//   res.json({ message: 'Hello World' });
-// });
-
-// const PORT = process.env.PORT;
-
-// app.listen(PORT, () => console.log(`Server is Running on Port ${PORT}`));
