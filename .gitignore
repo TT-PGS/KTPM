@@ -31,3 +31,4 @@
 *.out
 *.app
 backend/target/*
+.vscode/settings.json
