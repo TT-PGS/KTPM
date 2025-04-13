@@ -29,6 +29,4 @@ public class Account {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     private Boolean phoneNumberConfirmed = false;
-
-    // Getters, Setters (sử dụng Lombok nếu bạn muốn)
 }
