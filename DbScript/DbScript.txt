@@ -1,0 +1,182 @@
+-----------------------------------------------
+
+CREATE DATABASE IF NOT EXISTS ChatApp;
+USE ChatApp;
+CREATE TABLE Account (
+    ID_User VARCHAR(255) PRIMARY KEY,   -- UUID
+    Nickname VARCHAR(50) NOT NULL,
+    Phone VARCHAR(11) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    last_active DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_messages INT DEFAULT 0,
+    total_images INT DEFAULT 0,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PhoneNumberConfirmed BOOLEAN DEFAULT FALSE
+);
+----------------------------------------------
+
+CREATE TABLE Conversation (
+    ID_Conversation VARCHAR(255) PRIMARY KEY,  -- UUID
+    Name VARCHAR(100) NOT NULL,
+    IsPrivate BOOLEAN NOT NULL DEFAULT TRUE,
+    IsGroup BOOLEAN NOT NULL DEFAULT FALSE,
+    CreatAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+--------------------------------------------------
+CREATE TABLE User_Conversation (
+    User_ID VARCHAR(255) NOT NULL,
+    Conversation_ID VARCHAR(255) NOT NULL,
+    Role ENUM('Admin', 'Member') DEFAULT 'Member',  
+    join_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (User_ID, Conversation_ID),
+    FOREIGN KEY (User_ID) REFERENCES Account(ID_User) ON DELETE CASCADE,
+    FOREIGN KEY (Conversation_ID) REFERENCES Conversation(ID_Conversation) ON DELETE CASCADE
+);
+-------------------------------------------------------
+
+CREATE TABLE Message (
+    ID_Message VARCHAR(255) PRIMARY KEY,
+    Conversation_ID VARCHAR(255) NOT NULL,
+    Sender_ID VARCHAR(255) NOT NULL,
+    Content TEXT,
+    Time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    type ENUM('text', 'image', 'video', 'file') NOT NULL DEFAULT 'text',
+    URL VARCHAR(255),
+    edited_time TIMESTAMP NULL DEFAULT NULL,
+    
+    FOREIGN KEY (Conversation_ID) REFERENCES Conversation(ID_Conversation) ON DELETE CASCADE,
+    FOREIGN KEY (Sender_ID) REFERENCES Account(ID_User) ON DELETE CASCADE
+);
+-------------------------------------------------------
+CREATE TABLE React (
+    User_ID VARCHAR(255) NOT NULL,
+    Message_ID VARCHAR(255) NOT NULL,
+    type ENUM('like', 'love', 'haha', 'sad', 'angry') NOT NULL DEFAULT 'like',
+    reactNum INT DEFAULT 1,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (User_ID, Message_ID),
+    FOREIGN KEY (User_ID) REFERENCES Account(ID_User) ON DELETE CASCADE,
+    FOREIGN KEY (Message_ID) REFERENCES Message(ID_Message) ON DELETE CASCADE
+);
+
+-----------------------------------------------------------
+CREATE TABLE Message_Read_Status (
+    User_ID VARCHAR(255) NOT NULL,
+    Message_ID VARCHAR(255) NOT NULL,
+    IsRead BOOLEAN DEFAULT FALSE,
+    ReadAt TIMESTAMP NULL DEFAULT NULL,
+    PRIMARY KEY (User_ID, Message_ID),
+    FOREIGN KEY (User_ID) REFERENCES Account(ID_User) ON DELETE CASCADE,
+    FOREIGN KEY (Message_ID) REFERENCES Message(ID_Message) ON DELETE CASCADE
+);
+-----------------------------------------------------------
+CREATE TABLE Pinned_Message (
+    Conversation_ID VARCHAR(255) NOT NULL,
+    Message_ID VARCHAR(255) NOT NULL,
+    PinnedBy VARCHAR(255) NOT NULL, 
+    PinnedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Conversation_ID, Message_ID),
+    FOREIGN KEY (Conversation_ID) REFERENCES Conversation(ID_Conversation) ON DELETE CASCADE,
+    FOREIGN KEY (Message_ID) REFERENCES Message(ID_Message) ON DELETE CASCADE,
+    FOREIGN KEY (PinnedBy) REFERENCES Account(ID_User) ON DELETE CASCADE
+);
+-----------------------------------------------------------
+-- Import to Account
+
+INSERT INTO Account (ID_User, Nickname, Phone, Password) 
+SELECT 
+    UUID(), 
+    CONCAT('User', FLOOR(RAND() * 1000)), 
+    CONCAT('09', FLOOR(RAND() * 100000000)), 
+    MD5(UUID()) 
+FROM (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10) AS tmp;
+
+----------------------------------------------------------
+--Import to Conversation
+
+INSERT INTO Conversation (ID_Conversation, Name, IsPrivate, IsGroup) 
+VALUES 
+(UUID(), 'Chat Private 1', TRUE, FALSE),
+(UUID(), 'Chat Private 2', TRUE, FALSE),
+(UUID(), 'Group Chat 1', FALSE, TRUE),
+(UUID(), 'Group Chat 2', FALSE, TRUE),
+(UUID(), 'Group Chat 3', FALSE, TRUE);
+
+---------------------------------------------------------
+-- Import to User_Converstion
+
+INSERT INTO User_Conversation (User_ID, Conversation_ID, Role)
+SELECT 
+    A.ID_User, 
+    C.ID_Conversation, 
+    CASE FLOOR(RAND() * 2) WHEN 0 THEN 'Admin' ELSE 'Member' END
+FROM Account A
+JOIN Conversation C
+ON RAND() > 0.5
+LIMIT 15;
+
+
+---------------------------------------------------
+-- Import into Message
+INSERT INTO Message (ID_Message, Conversation_ID, Sender_ID, Content, type)
+SELECT 
+    UUID(), 
+    UC.Conversation_ID, 
+    UC.User_ID, 
+    CONCAT('Message ', FLOOR(RAND() * 1000)), 
+    CASE FLOOR(RAND() * 4) 
+        WHEN 0 THEN 'text' 
+        WHEN 1 THEN 'image' 
+        WHEN 2 THEN 'video' 
+        ELSE 'file' 
+    END
+FROM User_Conversation UC
+LIMIT 20;
+
+-----------------------------------------
+-- Import into React
+
+INSERT INTO React (User_ID, Message_ID, type, reactNum, createdAt)
+SELECT 
+    UC.User_ID, 
+    M.ID_Message, 
+    ELT(FLOOR(1 + (RAND() * 5)), 'like', 'love', 'haha', 'sad', 'angry'), 
+    1, 
+    NOW()
+FROM User_Conversation UC
+JOIN Message M ON UC.Conversation_ID = M.Conversation_ID
+WHERE RAND() > 0.5
+LIMIT 20
+ON DUPLICATE KEY UPDATE 
+    type = VALUES(type), 
+    reactNum = reactNum + 1, 
+    createdAt = NOW();
+----------------------------
+INSERT INTO Message_Read_Status (User_ID, Message_ID, IsRead, ReadAt)
+SELECT 
+    UC.User_ID, 
+    M.ID_Message, 
+    TRUE, 
+    NOW()
+FROM User_Conversation UC
+JOIN Message M ON RAND() > 0.5
+LIMIT 20
+ON DUPLICATE KEY UPDATE ReadAt = NOW();
+------------------------------
+INSERT INTO Pinned_Message (Conversation_ID, Message_ID, PinnedBy, PinnedAt)
+SELECT 
+    M.Conversation_ID, 
+    M.ID_Message, 
+    UC.User_ID, 
+    NOW()
+FROM User_Conversation UC
+JOIN Message M ON UC.Conversation_ID = M.Conversation_ID
+WHERE RAND() > 0.5
+LIMIT 10
+ON DUPLICATE KEY UPDATE PinnedAt = NOW();
+--------------------------------------
+
+
+
