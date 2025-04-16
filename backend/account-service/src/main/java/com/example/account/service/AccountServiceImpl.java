@@ -5,6 +5,7 @@ import com.example.account.entity.Account;
 import com.example.account.exception.ConflictException;
 import com.example.account.exception.NotFoundException;
 import com.example.account.exception.UnauthorizedException;
+import com.example.account.exception.BadRequestException;
 import com.example.account.firebaseAuth.FirebaseAuthService;
 import com.example.account.mapper.AccountMapper;
 import com.example.account.repository.AccountRepository;
@@ -40,16 +41,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDto create(AccountDto dto, String idToken) {
         FirebaseToken decodedToken = firebaseAuthService.verifyIdToken(idToken);
-        String phone = (String) decodedToken.getClaims().get("phone_number");
+
+        Object phoneObj = decodedToken.getClaims().get("phone_number");
+        String phone = (phoneObj != null) ? phoneObj.toString() : dto.getPhone(); // fallback từ DTO
+
+        if (phone == null || phone.isBlank()) {
+            throw new BadRequestException("Phone number is required");
+        }
+
         if (repository.existsByPhone(phone)) {
             throw new ConflictException("Phone already exists");
         }
+
         Account account = mapper.toEntity(dto);
         account.setPhone(phone);
         account.setPassword(passwordEncoder.encode(dto.getPassword()));
         account.setCreatedAt(LocalDateTime.now());
         account.setUpdatedAt(LocalDateTime.now());
-        account.setPhoneNumberConfirmed(true);
+        account.setPhoneNumberConfirmed(phoneObj != null);
+
         return mapper.toDto(repository.save(account));
     }
 
@@ -101,8 +111,17 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto update(String id, AccountDto dto) {
         Account account = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
-        account.setNickname(dto.getNickname());
+
+        if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+            account.setNickname(dto.getNickname());
+        }
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            account.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         account.setUpdatedAt(LocalDateTime.now());
         return mapper.toDto(repository.save(account));
     }
+
 }

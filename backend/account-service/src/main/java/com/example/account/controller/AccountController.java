@@ -16,52 +16,51 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService service;
-    private final FirebaseAuthService firebaseAuthService;
 
-    public AccountController(AccountService service, FirebaseAuthService firebaseAuthService) {
+    public AccountController(AccountService service) {
         this.service = service;
-        this.firebaseAuthService = firebaseAuthService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody @Valid AccountDto dto,
+    public ResponseEntity<AccountDto> create(@RequestBody @Valid AccountDto dto,
             @RequestHeader("Authorization") String idToken) {
         return ResponseEntity.ok(service.create(dto, idToken));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(service.login(loginRequest.getPhoneOrNickname(), loginRequest.getPassword()));
+    public ResponseEntity<AccountDto> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(service.login(request.getPhoneOrNickname(), request.getPassword()));
     }
 
     @GetMapping("/{id}")
-    public AccountDto get(@PathVariable("id") String id) {
-        return service.getById(id);
+    public ResponseEntity<AccountDto> get(@PathVariable("id") String id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @GetMapping("/exists/{id}")
-    public boolean exists(@PathVariable String id) {
-        return service.exists(id);
+    public ResponseEntity<Boolean> exists(@PathVariable("id") String id) {
+        return ResponseEntity.ok(service.exists(id));
     }
 
     @GetMapping("/batch")
-    public List<AccountDto> getMany(@RequestParam List<String> ids) {
-        return service.getByIds(ids);
+    public ResponseEntity<List<AccountDto>> getMany(@RequestParam("ids") List<String> ids) {
+        return ResponseEntity.ok(service.getByIds(ids));
     }
 
     @GetMapping
-    public List<AccountDto> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<AccountDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody @Valid AccountDto dto) {
+    public ResponseEntity<AccountDto> update(@PathVariable("id") String id,
+            @RequestBody @Valid AccountDto dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 }

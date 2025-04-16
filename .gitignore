@@ -39,3 +39,4 @@
 backend/account-service/target/*
 backend/conversation-service/target/*
 backend/account-service/src/main/resources/firebase-service-account.json
+python_test_firebase_get_token/venv/*
