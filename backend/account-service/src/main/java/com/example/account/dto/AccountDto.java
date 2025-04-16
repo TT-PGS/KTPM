@@ -1,16 +1,13 @@
 package com.example.account.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class AccountDto {
     private String id;
-    private String name;
-    private String email;
+    private String nickname;
+    private String phone;
+    private String password;
 }

@@ -1,8 +1,35 @@
 spring:
+  boot:
+    admin:
+      client:
+        enabled: true
   datasource:
-    url: jdbc:mysql://localhost:3306/Account_db
-    username: root
-    password: a
+    url: jdbc:mysql://192.168.1.10:3306/account_db
+    username: linuxUser
+    password: KTPM_247
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+

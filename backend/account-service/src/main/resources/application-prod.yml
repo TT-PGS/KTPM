@@ -1,5 +1,5 @@
 spring:
   datasource:
     url: jdbc:mysql://prod-host:3306/account_db
-    username: prod_user
-    password: a
+    username: linuxUser
+    password: KTPM_247

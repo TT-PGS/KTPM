@@ -30,5 +30,12 @@
 *.exe
 *.out
 *.app
-backend/target/*
+*.class
+*.jar
+*.war
+*.ear
+
 .vscode/settings.json
+backend/account-service/target/*
+backend/conversation-service/target/*
+backend/account-service/src/main/resources/firebase-service-account.json

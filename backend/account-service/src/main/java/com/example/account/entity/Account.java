@@ -1,32 +1,44 @@
 package com.example.account.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "account")
+@Getter
+@Setter
 public class Account {
-
     @Id
-    @Column(name = "ID_User", nullable = false)
-    private String idUser;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id_user")
+    private String id;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "nickname")
     private String nickname;
 
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(nullable = false)
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "last_active")
     private LocalDateTime lastActive;
 
-    private Integer totalMessages = 0;
-    private Integer totalImages = 0;
+    @Column(name = "total_messages")
+    private Integer totalMessages;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(name = "total_images")
+    private Integer totalImages;
 
-    private Boolean phoneNumberConfirmed = false;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "phone_number_confirmed")
+    private Boolean phoneNumberConfirmed;
 }
