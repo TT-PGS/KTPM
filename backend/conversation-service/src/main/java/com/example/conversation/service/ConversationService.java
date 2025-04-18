@@ -1,13 +1,19 @@
 package com.example.conversation.service;
 
-import com.example.conversation.dto.ConversationDto;
+import com.example.conversation.dto.*;
 
 import java.util.List;
 
 public interface ConversationService {
-    ConversationDto create(ConversationDto dto);
+    ConversationDto createConversation(ConversationDto dto, AccountDto currentUser);
 
-    ConversationDto get(String id);
+    void addMember(ModifyMemberDto dto, AccountDto currentUser);
 
-    List<ConversationDto> getAll();
+    void removeMember(ModifyMemberDto dto, AccountDto currentUser);
+
+    void promoteLeader(PromoteLeaderDto dto, AccountDto currentUser);
+
+    String getConversationById(String conversationId, AccountDto currentUser);
+
+    List<String> getConversationsByUserId(AccountDto currentUser);
 }

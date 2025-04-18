@@ -39,7 +39,40 @@ public class Account {
     @Column(name = "last_active")
     private LocalDateTime lastActive;
 
+    @Column(name = "token")
+    private String token;
+
+    @Column(name = "token_created_at")
+    private LocalDateTime createdTokenAt;
+
+    @Column(name = "token_expires_at")
+    private LocalDateTime expiresTokenAt;
+
     // --- GETTER & SETTER ---
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public LocalDateTime getCreatedTokenAt() {
+        return createdTokenAt;
+    }
+
+    public void setCreatedTokenAt(LocalDateTime createdTokenAt) {
+        this.createdTokenAt = createdTokenAt;
+    }
+
+    public LocalDateTime getExpiresTokenAt() {
+        return expiresTokenAt;
+    }
+
+    public void setExpiresTokenAt(LocalDateTime expiresTokenAt) {
+        this.expiresTokenAt = expiresTokenAt;
+    }
+
     public String getId() {
         return id;
     }

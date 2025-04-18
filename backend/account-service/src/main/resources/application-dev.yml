@@ -4,7 +4,7 @@ spring:
       client:
         enabled: true
   datasource:
-    url: jdbc:mysql://192.168.1.13:3306/account_db
+    url: jdbc:mysql://192.168.1.10:3306/account_db
     username: linuxUser
     password: KTPM_247
   jpa:
@@ -22,6 +22,8 @@ logging:
 
 eureka:
   client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
     enabled: false
 
 management:

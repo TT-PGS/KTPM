@@ -6,10 +6,8 @@ import com.example.account.exception.ConflictException;
 import com.example.account.exception.NotFoundException;
 import com.example.account.exception.UnauthorizedException;
 import com.example.account.exception.BadRequestException;
-import com.example.account.firebaseAuth.FirebaseAuthService;
 import com.example.account.mapper.AccountMapper;
 import com.example.account.repository.AccountRepository;
-import com.google.firebase.auth.FirebaseToken;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,59 +16,64 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository repository;
     private final AccountMapper mapper;
-    private final FirebaseAuthService firebaseAuthService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AccountServiceImpl(AccountRepository repository,
             AccountMapper mapper,
-            FirebaseAuthService firebaseAuthService,
             PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.mapper = mapper;
-        this.firebaseAuthService = firebaseAuthService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public AccountDto create(AccountDto dto, String idToken) {
-        FirebaseToken decodedToken = firebaseAuthService.verifyIdToken(idToken);
+    public AccountDto create(AccountDto dto) {
 
-        Object phoneObj = decodedToken.getClaims().get("phone_number");
-        String phone = (phoneObj != null) ? phoneObj.toString() : dto.getPhone(); // fallback từ DTO
-
-        if (phone == null || phone.isBlank()) {
+        if (dto.getPhone().isEmpty() || dto.getPhone().isBlank()) {
             throw new BadRequestException("Phone number is required");
         }
 
-        if (repository.existsByPhone(phone)) {
+        if (repository.existsByPhone(dto.getPhone())) {
             throw new ConflictException("Phone already exists");
         }
 
+        if (dto.getNickname().isEmpty() || dto.getNickname().isBlank()) {
+            throw new BadRequestException("Nickname is required");
+        }
+
         Account account = mapper.toEntity(dto);
-        account.setPhone(phone);
+        account.setPhone(dto.getPhone());
         account.setPassword(passwordEncoder.encode(dto.getPassword()));
         account.setCreatedAt(LocalDateTime.now());
         account.setUpdatedAt(LocalDateTime.now());
-        account.setPhoneNumberConfirmed(phoneObj != null);
-
+        account.setPhoneNumberConfirmed(true);
+        account.setNickname(dto.getNickname());
         return mapper.toDto(repository.save(account));
     }
 
     @Override
     public AccountDto login(String identifier, String password) {
+
         Account account = repository.findByPhoneOrNickname(identifier)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
         if (!passwordEncoder.matches(password, account.getPassword())) {
             throw new UnauthorizedException("Invalid credentials");
         }
-        return mapper.toDto(account);
+
+        account.setToken(UUID.randomUUID().toString());
+        account.setCreatedTokenAt(LocalDateTime.now());
+        account.setExpiresTokenAt(LocalDateTime.now().plusDays(7));
+        account.setUpdatedAt(LocalDateTime.now());
+
+        return mapper.toDto(repository.save(account));
     }
 
     @Override
@@ -78,6 +81,16 @@ public class AccountServiceImpl implements AccountService {
         return repository.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
+    }
+
+    @Override
+    public AccountDto getCurrentUser(String token) {
+        Account account = repository.findByToken(token)
+                .orElseThrow(() -> new UnauthorizedException("Invalid token"));
+        if (account.getExpiresTokenAt().isBefore(LocalDateTime.now())) {
+            throw new UnauthorizedException("Token has expired");
+        }
+        return mapper.toDto(account);
     }
 
     @Override
@@ -92,6 +105,11 @@ public class AccountServiceImpl implements AccountService {
         return repository.findAll().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getAllNicknames() {
+        return repository.findAllNicknames();
     }
 
     @Override
