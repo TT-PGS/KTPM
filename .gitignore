@@ -40,3 +40,8 @@ backend/account-service/target/*
 backend/conversation-service/target/*
 backend/account-service/src/main/resources/firebase-service-account.json
 python_test_firebase_get_token/venv/*
+backend/react-service/target/classes/schema.sql
+backend/react-service/target/generated-sources/annotations/com/example/react/mapper/ReactMapperImpl.java
+backend/react-service/target/maven-archiver/pom.properties
+backend/react-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+backend/react-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

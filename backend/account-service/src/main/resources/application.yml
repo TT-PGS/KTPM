@@ -7,3 +7,6 @@ spring:
     name: account-service
   profiles:
     active: dev
+
+server:
+  port: 8081
