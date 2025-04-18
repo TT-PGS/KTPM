@@ -35,4 +35,37 @@ public class MessageServiceImpl implements MessageService {
                 .map(messageMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isUserInConversation(String userId, String conversationId) {
+        // Implement logic to check if the user is part of the conversation
+        return true; // Placeholder
+    }
+
+    @Override
+    public MessageDto updateMessage(String messageId, MessageDto messageDto) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+        message.setText(messageDto.getText());
+        message.setUpdateTime(LocalDateTime.now());
+        return messageMapper.toDto(messageRepository.save(message));
+    }
+
+    @Override
+    public void deleteMessage(String messageId) {
+        messageRepository.deleteById(messageId);
+    }
+
+    @Override
+    public MessageDto getMessageById(String messageId) {
+        return messageMapper.toDto(
+                messageRepository.findById(messageId).orElseThrow(() -> new RuntimeException("Message not found")));
+    }
+
+    @Override
+    public List<MessageDto> getMessagesBySenderId(String senderId) {
+        return messageRepository.findBySenderId(senderId).stream()
+                .map(messageMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }
