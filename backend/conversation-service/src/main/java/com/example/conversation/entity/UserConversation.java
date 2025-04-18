@@ -1,44 +1,35 @@
 package com.example.conversation.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_conversation")
-@IdClass(UserConversationId.class)
 public class UserConversation {
-    @Id
-    @Column(name = "user_id")
-    private String userId;
 
-    @Id
-    @Column(name = "conversation_id")
-    private String conversationId;
+    @EmbeddedId
+    private UserConversationId id;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("conversationId") // maps to id.conversationId
+    @JoinColumn(name = "conversation_id", nullable = false)
+    private Conversation conversation;
+
+    @Column(name = "role", nullable = false)
     private Role role = Role.MEMBER;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status = Status.ACTIVE;
 
-    @Column(name = "join_time")
+    @Column(name = "join_time", nullable = false)
     private LocalDateTime joinTime = LocalDateTime.now();
 
-    public String getUserId() {
-        return userId;
+    public UserConversationId getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
+    public void setId(UserConversationId id) {
+        this.id = id;
     }
 
     public Role getRole() {

@@ -2,15 +2,28 @@ package com.example.conversation.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import com.example.conversation.entity.ConversationType;
 
 @Entity
 @Table(name = "conversation")
 public class Conversation {
+
+    public Conversation() {
+    }
+
+    public Conversation(String id, String name, ConversationType type, String leaderId) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.leaderId = leaderId;
+    }
+
     @Id
-    @Column(name = "id_conversation")
+    @Column(name = "id_conversation", nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -20,13 +33,15 @@ public class Conversation {
     @Column(name = "leader_id")
     private String leaderId;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserConversation> userConversations;
+
     public String getId() {
         return id;
     }

@@ -1,9 +1,11 @@
 package com.example.conversation.entity;
 
+import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
+@Embeddable
 @EqualsAndHashCode
 public class UserConversationId implements Serializable {
     private String userId;
@@ -17,19 +19,20 @@ public class UserConversationId implements Serializable {
         this.conversationId = conversationId;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
+    // Getters and Setters
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getConversationId() {
-        return conversationId;
-    }
-
     public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getConversationId() {
+        return conversationId;
     }
 }

@@ -1,12 +1,7 @@
 package com.example.conversation.service.impl;
 
 import com.example.conversation.dto.*;
-import com.example.conversation.entity.Conversation;
-import com.example.conversation.entity.UserConversation;
-import com.example.conversation.entity.UserConversationId;
-import com.example.conversation.entity.ConversationType;
-import com.example.conversation.entity.Role;
-import com.example.conversation.entity.Status;
+import com.example.conversation.entity.*;
 import com.example.conversation.exception.ConflictException;
 import com.example.conversation.exception.ForbiddenException;
 import com.example.conversation.exception.NotFoundException;
@@ -31,17 +26,29 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public ConversationDto createConversation(ConversationDto dto, AccountDto currentUser) {
-        Set<String> participants = new HashSet<>(dto.getParticipantIds());
-        participants.add(currentUser.getId()); // ensure creator is part of conversation
+    public Optional<Conversation> findExisting(Set<String> userIds) {
+        List<String> matches = userConversationRepository.findConversationIdsByUserIds(userIds, userIds.size());
 
-        ConversationType type = (participants.size() == 2) ? ConversationType.PRIVATE : ConversationType.GROUP;
-
-        // Check if conversation with same participants exists
-        Optional<String> existingId = conversationRepository.findExistingConversation(participants);
-        if (existingId.isPresent()) {
-            throw new ConflictException("Conversation with same participants already exists.");
+        for (String id : matches) {
+            long actualCount = userConversationRepository.countByConversationId(id);
+            if (actualCount == userIds.size()) {
+                return conversationRepository.findById(id);
+            }
         }
+        return Optional.empty();
+    }
+
+    @Override
+    public ConversationDto createConversation(ConversationDto dto, AccountDto creator) {
+        Set<String> memberIds = new HashSet<>(dto.getParticipantIds());
+        memberIds.add(creator.getId());
+
+        Optional<Conversation> existing = findExisting(memberIds);
+        if (existing.isPresent()) {
+            throw new ConflictException("Conversation already exists");
+        }
+
+        final ConversationType type = memberIds.size() <= 2 ? ConversationType.PRIVATE : ConversationType.GROUP;
 
         Conversation conversation = new Conversation();
         conversation.setId(UUID.randomUUID().toString());
@@ -51,16 +58,15 @@ public class ConversationServiceImpl implements ConversationService {
         conversation.setUpdatedAt(LocalDateTime.now());
 
         if (type == ConversationType.GROUP) {
-            conversation.setLeaderId(currentUser.getId());
+            conversation.setLeaderId(creator.getId());
         }
 
         conversationRepository.save(conversation);
 
-        for (String userId : participants) {
+        for (String userId : memberIds) {
             UserConversation uc = new UserConversation();
-            uc.setUserId(userId);
-            uc.setConversationId(conversation.getId());
-            uc.setRole(userId.equals(currentUser.getId()) && type == ConversationType.GROUP ? Role.ADMIN : Role.MEMBER);
+            uc.setId(new UserConversationId(userId, conversation.getId()));
+            uc.setRole(userId.equals(creator.getId()) && type == ConversationType.GROUP ? Role.ADMIN : Role.MEMBER);
             uc.setStatus(Status.ACTIVE);
             uc.setJoinTime(LocalDateTime.now());
 
@@ -95,7 +101,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
 
         UserConversation member = new UserConversation();
-        member.setUserId(targetId.getUserId());
+        member.setId(new UserConversationId(currentUser.getId(), conversation.getId()));
         member.setRole(Role.MEMBER);
         member.setStatus(Status.ACTIVE);
         member.setJoinTime(LocalDateTime.now());
@@ -157,13 +163,12 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public List<String> getConversationsByUserId(AccountDto currentUser) {
-        List<UserConversation> userConversations = userConversationRepository.findByUserId(currentUser.getId());
+        List<UserConversation> userConversations = userConversationRepository.findByIdUserId(currentUser.getId());
         List<String> conversationNames = new ArrayList<>();
+        ConversationService conversationService = new ConversationServiceImpl(conversationRepository,
+                userConversationRepository);
         for (UserConversation uc : userConversations) {
-            final String conversationId = uc.getConversationId();
-            Conversation cn = conversationRepository.findById(conversationId)
-                    .orElseThrow(() -> new NotFoundException("Conversation not found"));
-            conversationNames.add(cn.getName());
+            conversationNames.add(conversationService.getConversationById(uc.getId().getConversationId(), currentUser));
         }
         return conversationNames;
     }

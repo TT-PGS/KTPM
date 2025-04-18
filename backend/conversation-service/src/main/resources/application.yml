@@ -1,6 +1,21 @@
 spring:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
   application:
     name: conversation-service
+  profiles:
+    active: dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
 
   profiles:
     active: dev
