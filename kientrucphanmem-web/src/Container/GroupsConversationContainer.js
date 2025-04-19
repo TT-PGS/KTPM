@@ -7,7 +7,7 @@ import Layout from './Layout';
 import ChatContent from '../Components/ChatContent';
 import '../Styles/Home.css';
 
-const socket = io('http://localhost:5009'); // Replace with your backend URL
+const socket = io("http://13.229.58.119:5009/"); // Replace with your backend URL
 
 const GroupsConversationContainer = () => {
   const dispatch = useDispatch();
