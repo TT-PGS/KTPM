@@ -1,0 +1,4 @@
+VPC: 10.0.0.0/16
+├── Public Subnet (10.0.1.0/24): Nginx, NAT Gateway, EC2 bootstrap
+├── Private Subnet (10.0.2.0/24): RDS
+├── Private Subnet (10.0.3.0/24): EC2 worker nodes (K8s)
