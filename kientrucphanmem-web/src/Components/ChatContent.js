@@ -43,7 +43,7 @@ const ChatContent = ({
                   {itMe(msg.sender) ? 'Bạn' : getSenderName(msg.sender)}
                 </div>
                 <div className="message">
-                  {msg.text.startsWith('uploads\\') ? (
+                  {msg.text.startsWith('uploads/') ? (
                     <img
                       src={`${process.env.REACT_APP_API_URL}${msg.text}`}
                       alt="Uploaded"
