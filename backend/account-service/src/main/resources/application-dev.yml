@@ -4,7 +4,7 @@ spring:
       client:
         enabled: true
   datasource:
-    url: jdbc:mysql://192.168.1.10:3306/account_db
+    url: jdbc:mysql://192.168.1.5:3306/account_db
     username: linuxUser
     password: KTPM_247
   jpa:
